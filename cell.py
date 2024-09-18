@@ -4,20 +4,31 @@ from typing import TypeVar
 Cell = TypeVar("Cell", bound="Cell")
 
 class Cell:
+    """
+    Class to represent a Cell of the maze. 
+    """
     def __init__(
         self,
-        has_top_wall: bool,
-        has_right_wall: bool,
-        has_bottom_wall: bool,
-        has_left_wall: bool,
         pos: Point,
-        size: int,
-        win: Window
+        width: int,
+        height: int,
+        win: Window,
+        has_top_wall=True,
+        has_right_wall=True,
+        has_bottom_wall=True,
+        has_left_wall=True,
     ) -> None:
         self._walls = [has_top_wall, has_right_wall, has_bottom_wall, has_left_wall]
         self._pos = pos
-        self._size = size
+        self._width = width
+        self._height = height
         self._win = win
+        self._corners = [
+            Point(self._pos.x, self._pos.y),
+            Point(self._pos.x + self._width, self._pos.y),
+            Point(self._pos.x + self._width, self._pos.y + self._height),
+            Point(self._pos.x, self._pos.y + self._height),
+        ]
 
     def get_center(self) -> Point:
         half = self._size // 2
@@ -31,15 +42,9 @@ class Cell:
         self._win.draw_line(line, fill_color)
 
     def draw(self, fill_color="black") -> None:
-        dx, dy = self._size, 0
-        a = self._pos
-        b = Point(a.x + dx, a.y + dy)
-        line = Line(a, b)
-
-        for wall in self._walls:
+        for i in range(4):
+            start, end = self._corners[i % 4], self._corners[(i + 1) % 4]
+            line = Line(start, end)
+            wall = self._walls[i]
             if wall:
                 self._win.draw_line(line, fill_color)
-            dx, dy = -dy, dx
-            a = line.b
-            b = Point(a.x + dx, a.y + dy)
-            line = Line(a, b)

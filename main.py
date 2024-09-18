@@ -1,5 +1,6 @@
 from graphics import Window, Line, Point
 from cell import Cell
+from maze import Maze
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600
@@ -8,17 +9,13 @@ CELL_SIZE = 50
 def main() -> None:
     win = Window(WIN_WIDTH, WIN_HEIGHT)
     
-    lineA = Line(Point(0, 0), Point(800, 600))
-    lineB = Line(Point(800, 0), Point(0, 600))
- 
-    prev_cell = None
-    for x in range(0, 800, 50):
-        for y in range(0, 600, 50):
-            curr_cell = Cell(True, True, True, True, Point(x, y), 50, win)
-            curr_cell.draw()
-            if prev_cell:
-                curr_cell.draw_path(prev_cell)
-            prev_cell = curr_cell
+    num_rows = 12
+    num_cols = 16
+    margin = 5
+    cell_width = (WIN_WIDTH - 2 * margin) / num_cols
+    cell_height = (WIN_HEIGHT - 2 * margin) / num_rows
+
+    maze = Maze(margin, num_rows, num_cols, cell_width, cell_height, win)
                  
     win.wait_for_close()
 
