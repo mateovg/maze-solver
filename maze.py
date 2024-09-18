@@ -9,4 +9,6 @@ class Maze:
             cell_size: int,
             window: Window
         ) -> None:
-        pass
+        self._pos = pos
+        self.num_rows = num_rows
+        
