@@ -15,7 +15,7 @@ def main() -> None:
     cell_width = (WIN_WIDTH - 2 * margin) / num_cols
     cell_height = (WIN_HEIGHT - 2 * margin) / num_rows
 
-    maze = Maze(margin, num_rows, num_cols, cell_width, cell_height, win)
+    maze = Maze(margin, num_rows, num_cols, cell_width, cell_height, window=win)
                  
     win.wait_for_close()
 
