@@ -1,7 +1,10 @@
-from time import sleep
+from asyncio import sleep
+import random
 from typing import List
 from cell import Cell
 from graphics import Window, Point
+
+DIRECTIONS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
 class Maze:
     def __init__(
@@ -27,6 +30,7 @@ class Maze:
 
         self._create_cells()
         self._break_entrance_and_exit()
+        self._break_walls_r(0, 0)
 
     def _create_cells(self) -> None:
         for row in range(self._num_rows):
@@ -36,24 +40,58 @@ class Maze:
                 self._cell_grid[row][col] = Cell(
                         Point(x, y), self._cell_width, self._cell_height, self._win
                     )
-        for row in self._cell_grid:
-            for cell in row:
-                self._draw_cell(cell)
+        for row in range(self._num_rows):
+            for col in range(self._num_cols):
+                self._draw_cell(row, col, to_sleep=False)
                 
+    def _break_cell_wall(self, row: int, col: int, wall: int | None = None) -> None:
+        self._cell_grid[row][col].break_wall(wall=wall)
+        self._draw_cell(row, col)
+    
+    def _get_neighbors(self, row: int, col: int) -> List[tuple[int, int]]:
+        neighbors = []
+        for dr, dc in DIRECTIONS:
+            new_row, new_col = row + dr, col + dc
+            if (0 <= new_row < self._num_rows) and (0 <= new_col < self._num_cols):
+                neighbors.append([new_row, new_col])
+                    
+        return neighbors           
+         
+    def _break_walls_r(self, row: int, col: int) -> None:
+        print(f"Call on {row}, {col}")
+        neighbors = self._get_neighbors(row, col)
+        print(f"{neighbors=}")
+        options = [(r, c) for (r, c) in neighbors if not self._cell_visited[r][c]]
+        print(f"{options=}")
+        self._cell_visited[row][col] = True        
+
+        if len(options) == 0:
+            print("Done breaking walls...")
+            self._draw_cell(row, col)
+            return
+
+        new_row, new_col = random.choice(options)
+        d_row, d_col= new_row - row, new_col - col
+       
+        wall = DIRECTIONS.index((d_row, d_col))
+        self._break_cell_wall(row, col, wall=wall) 
+        self._draw_cell(row, col)
+        self._break_walls_r(new_row, new_col)  
+   
+    
     def _break_entrance_and_exit(self) -> None:
-        cells = [self._cell_grid[0][0], self._cell_grid[-1][-1]]
-        for cell in cells:
-            cell.break_wall()
-            self._draw_cell(cell)
-                
-    def _draw_cell(self, cell: Cell) -> None:
+        self._break_cell_wall(0, 0, 0)
+         
+    def _draw_cell(self, row: int, col: int, to_sleep: bool = True, color: str = "black") -> None:
         if self._win is None:
             return
-        cell.draw()
-        self._animate()
+        cell = self._cell_grid[row][col]
+        cell.draw(fill_color=color)
+        self._animate(to_sleep=to_sleep)
     
-    def _animate(self) -> None:
+    def _animate(self, to_sleep: bool) -> None:
         if self._win is None:
             return
         self._win.redraw()
-        # sleep(0.01)
+        if to_sleep:
+            sleep(0.1)

@@ -49,6 +49,11 @@ class Cell:
         self._win.draw_line(line, fill_color)
 
     def break_wall(self, wall: int | None = None):
+        """Breaks the wall of the Cell by setting it false
+
+        Args:
+            wall (int | None, optional): Wall to break. o => Up, 1 => right, 2 => down, 3 => left. Defaults to random.
+        """
         if wall is None:
             wall = random.randint(0, 3)
         # print(f"Breaking {self._pos}: Wall {wall}")
@@ -60,10 +65,10 @@ class Cell:
             line = Line(start, end)
 
             if self._walls[i]:
-                # print(f"Cell: Printing: {self._pos}: Wall: {i}")
+                print(f"Cell: Printing: {self._pos}: Wall: {i} Color: {fill_color}")
                 self._win.draw_line(line, fill_color)
             else:
-                # print(f"Cell: Erasing: {self._pos}: Wall: {i}")
+                print(f"Cell: Erasing: {self._pos}: Wall: {i}")
                 self._win.draw_line(line, "white")
 
     def _get_walls(self) -> int:
