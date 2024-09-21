@@ -6,11 +6,14 @@ class Point:
     """
     Class to represent an (x, y) point on a 2D plane
     """
-    def __init__(self, x: int, y: int) -> None:
+    def __init__(self, x: float, y: float) -> None:
         self.x = x
         self.y = y
+        
+    def __repr__(self) -> str:
+        return f"Point(x: {int(self.x)}, y: {int(self.y)})"
 
-    def get_coords(self) -> tuple[int, int]:
+    def get_coords(self) -> tuple[float, float]:
         return (self.x, self.y)
 
 
