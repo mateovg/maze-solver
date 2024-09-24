@@ -9,8 +9,8 @@ CELL_SIZE = 50
 def main() -> None:
     win = Window(WIN_WIDTH, WIN_HEIGHT)
     
-    num_rows = 12
-    num_cols = 16
+    num_rows = 50
+    num_cols = 50
     margin = 5
     cell_width = (WIN_WIDTH - 2 * margin) / num_cols
     cell_height = (WIN_HEIGHT - 2 * margin) / num_rows

@@ -56,20 +56,25 @@ class Cell:
         """
         if wall is None:
             wall = random.randint(0, 3)
-        # print(f"Breaking {self._pos}: Wall {wall}")
+        print(f"Breaking {self._pos}: Wall {wall}")
         self._walls[wall] = False
 
     def draw(self, fill_color="black") -> None:
-        for i in range(4):
-            start, end = self._corners[i % 4], self._corners[(i + 1) % 4]
-            line = Line(start, end)
-
-            if self._walls[i]:
-                print(f"Cell: Printing: {self._pos}: Wall: {i} Color: {fill_color}")
-                self._win.draw_line(line, fill_color)
+        # print(f"Drawing cell... Walls: {self._walls}")
+        for wall, to_draw in enumerate(self._walls):
+            if to_draw:
+                self._draw_wall(wall, fill_color)
             else:
-                print(f"Cell: Erasing: {self._pos}: Wall: {i}")
-                self._win.draw_line(line, "white")
+                self._erase_wall(wall) 
+
+            
+    def _draw_wall(self, wall: int, fill_color: str) -> None:
+        start, end = self._corners[wall % 4], self._corners[(wall + 1) % 4]
+        line = Line(start, end)
+        self._win.draw_line(line, fill_color)
+    
+    def _erase_wall(self, wall: int) -> None:
+        self._draw_wall(wall, fill_color="white")
 
     def _get_walls(self) -> int:
         """_summary_
